@@ -1,6 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 Simple App which Creates New Notes and you can edit or delete them later
+![alt text](https://github.com/p-abasian/Notes-App/blob/master/demo.jpg)
+
 
 ## step 1
 
