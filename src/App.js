@@ -23,6 +23,14 @@ class App extends Component {
         this.oninput = this.oninput.bind(this);
     }
 
+    componentDidMount(){
+        var notes = localStorage.getItem("notes");
+        if (notes) {
+            var obj = JSON.parse(notes);
+            this.setState({notelist: obj});
+        }
+
+    }
     addNote() {
         var today = new Date(),
             date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -45,7 +53,9 @@ class App extends Component {
         var index = array.findIndex(note => note.id === noteid);
         if (index !== -1) {
             array.splice(index, 1);
-            this.setState({notelist: array});
+            this.setState({notelist: array},()=>{
+                localStorage.setItem("notes",JSON.stringify(this.state.notelist));
+            });
         }
 
     }
@@ -60,12 +70,14 @@ class App extends Component {
     }
 
     emitChange(e, noteid) {
-        var html = e.currentTarget.textContent;
+        var html = e.currentTarget.innerHTML;
         this.setState({
             notelist: this.state.notelist.map(
                 (note, i) => note.id === noteid ? {...note, text: html, editing: false}
                     : note
             )
+        },()=>{
+            localStorage.setItem("notes",JSON.stringify(this.state.notelist));
         });
     }
 
@@ -89,10 +101,11 @@ class App extends Component {
                             <div className="note"
                                  contentEditable={true}
                                  suppressContentEditableWarning={true}
+                                 dangerouslySetInnerHTML={{__html: note.text}}
                                  onInput={(e) => this.oninput(e, note.id)}
                                  onClick={(e) => this.oninput(e, note.id)}
                                  onBlur={(e) => this.emitChange(e, note.id)}
-                            >{note.text}</div>
+                            />
                         </div>
                     ))
                 }
